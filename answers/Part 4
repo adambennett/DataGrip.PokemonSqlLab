@@ -1,0 +1,29 @@
+Part 4
+
+# My answer for the strongest trainer in the database is Supertrainer♀ Garvon, who achieved this ranking with her powerful Slaking.
+# She has been scored as the strongest player by my metric that I calculated below, which is essentially looking for the pokemon that
+# has the highest overall stats (attack + defense + sp.atk + sp.def + maxhp + speed). Slaking's total score by this metric topped the charts
+# at a whopping 1048. Notably, this pokemon ties in score with 3 other pokemon in the database, so technically the following trainers also
+# scored equally as high on the trainer leaderboard: Cooltrainer♀ Rask, Myth Trainer Infin, and Myth Trainer Inity. Interestingly enough,
+# each of these trainers strongest pokemon were also Slaking.
+
+SELECT
+  p.name AS "Pokemon Name",
+  ta.trainername AS "Trainer Name",
+  tr.pokeLevel AS "Level",
+  pTypes.name AS "Primary Type",
+  sTypes.name AS "Secondary Type",
+  tr.attack AS "Attack",
+  tr.defense AS "Defense",
+  tr.speed AS "Speed",
+  tr.spatk AS "Special Attack",
+  tr.spdef AS "Special Defense",
+  tr.maxhp AS "HP",
+    AVG(Attack + Defense + "Special Attack" + "Special Defense" + HP) AS "Score"
+FROM pokemon.trainers AS ta
+  LEFT JOIN pokemon.pokemon_trainer AS tr ON ta.trainerID = tr.trainerID
+  LEFT JOIN pokemon.pokemons AS p ON p.id = tr.pokemon_id
+  LEFT JOIN pokemon.types AS pTypes ON p.primary_type = pTypes.id
+  LEFT JOIN pokemon.types AS sTypes ON p.secondary_type = sTypes.id
+GROUP BY p.name, ta.trainername, tr.pokeLevel, tr.attack, tr.defense, tr.spatk, tr.spdef, tr.maxhp, tr.speed, pTypes.name, sTypes.name
+ORDER BY AVG(Attack + Defense + "Special Attack" + "Special Defense" + HP + Speed);
